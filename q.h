@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <TCB.h>
 
 struct q {
     struct q* next;
@@ -15,8 +16,8 @@ struct queue {
 };
 
 void debug(const char * format, ...) ;
-struct q* newItem();
+struct TCB_t* newItem();
 struct queue* initQ(struct q* head);
-void addQ(struct q* head,struct q* index);
-struct q* delQ(struct q* head);
+void addQ(struct q* head,struct TCB_t* index);
+struct TCB_t* delQ(struct q* head);
 void rotateQ(struct q* head);
