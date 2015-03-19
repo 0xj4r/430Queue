@@ -8,8 +8,8 @@
 #include "q.h"
 
 
+extern struct queue *RunQ; // 
 
-struct queue *runQ;
 
 
 void start_Thread(void (*function)(void));
@@ -21,7 +21,7 @@ void startThread(void (*function)(void)) {
 	void *stack = (void *) malloc(8192);
 	TCB_t *temp = newItem();
 	init_TCB(temp, function, stack, 8192);
-	addQueue(RunQ, temp);
+	addQueue(RunQ->head, temp);
 	return;
 }
 
@@ -29,7 +29,7 @@ void startThread(void (*function)(void)) {
 void run() {
     ucontext_t parent;     // get a place to store the main context, for faking
     getcontext(&parent);   // magic sauce
-    swapcontext(&parent, &(RunQ->conext));  // start the first thread
+    swapcontext(&parent, &(RunQ->head->context));  // start the first thread
 	return;
 }
 
@@ -37,9 +37,9 @@ void run() {
 void yield() {
 	ucontext_t from, to;	
 	getcontext(&from);
-	RunQ->header->context = from;
-	rotQueue(RunQ);
-	to = RunQ->header->context;
+	RunQ->head->context = from;
+	rotQueue(RunQ->head);
+	to = RunQ->head->context;
 	swapcontext(&from, &to);
 
 	return;
