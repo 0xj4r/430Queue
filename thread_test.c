@@ -70,7 +70,7 @@ void f3(void) {
 int main() {
 	RunQ = (struct TCB_t*) malloc(sizeof(struct TCB_t));
 
-	initQueue(RunQ->head);
+	initQ(RunQ->head);
 
 	startThread(f1);
 	startThread(f2);
