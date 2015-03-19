@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
-#include <TCB.h>
+#include <unistd.h>
+#include <string.h>
+#include "TCB.h"
 
 struct q {
-    struct q* next;
-    struct q* prev;
-    int payload;
+	struct TCB_t *header;
 };
 
 struct queue {

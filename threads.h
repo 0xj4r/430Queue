@@ -1,16 +1,12 @@
 // Students - Tim Ferguson and Josh Ransom
-// Class: CSE430 
-// Assignment: Project 2
-// Description: threads.h as described in assignment file
+
 
 #ifndef THREADS_H
 #define THREADS_H
 
-//---------------//
-// Include Files //
-//---------------//
-#include "que.h"
-#include "tcb.h"
+
+#include "q.h"
+
 
 
 struct queue *runQ;
@@ -37,9 +33,7 @@ void run() {
 	return;
 }
 
-//--------------//
-// yield Method //
-//--------------//
+
 void yield() {
 	ucontext_t from, to;	
 	getcontext(&from);
