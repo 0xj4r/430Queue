@@ -20,8 +20,7 @@ void yield();
 void start_thread(void (*function)(void)) { //run thread from the tcb
 	void *stack = (void *) malloc(8192);
 	struct TCB_t *temp = newItem();
-	init_TCB(temp, function, stack, 8192);
-	printf("DEBUG: START THREAD \n");	
+	init_TCB(temp, function, stack, 8192);	
 	addQ(RunQ->head, temp);
 	return;
 }
@@ -38,7 +37,7 @@ void run() {
 void yield() { //context switch type of function
 	ucontext_t *from, *to;	
 	from = &(RunQ->head->context);
-	printf("YIELD\n");	
+	//printf("YIELD\n");	
 	rotateQ(RunQ->head);
 	to = &(RunQ->head->context);
 	swapcontext(from, to);

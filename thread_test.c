@@ -5,82 +5,70 @@
 #include "threads.h"
 
 
-int globalRuns = 0; // Increment after each run
-struct queue *RunQ;
+int globalRuns = 0;
+struct queue *RunQ;//global Q
 
 
 void f1(void) {
 
-	int local = 0;
-
-//	if (DEBUG) printf("THREAD 1: STARTED!!!\n");
-
-	for (;;) {
-		printf("THREAD 1:\tGLOBAL: %d\tLOCAL: %d\n", globalRuns, local);	
+	int localVar = 0;
+	printf("Thread 1: has begun! - increments local by one\n");
+	while(1) {
+		printf("Thread 1:\tGlobal: %d\tLocal: %d\n", globalRuns, localVar);	
 		globalRuns++;
-		local++;
+		localVar++;
 		sleep(1);
 		yield();
-		printf("FUNK 1\n");
+		//printf("FUNK 1\n");
 	}
-
 	return;
 }
 
 
 void f2(void) {
-	// Simulate Power of 2
-	int local = 2;
 
-//	if (DEBUG) printf("THREAD 2: STARTED!!!\n");
-
-	for (;;) {
-		printf("THREAD 2:\tGLOBAL: %d\tLOCAL: %d\n", globalRuns, local);	
+	int localVar = 2;
+	printf("Thread 2: has begun! - This thread doubles the local variable each time\n");
+	while(1) {
+		printf("Thread 2:\tGlobal: %d\tLocal: %d\n", globalRuns, localVar);	
 		globalRuns++;
-		local *= 2;
+		localVar = localVar*2;
 		sleep(1);
 		yield();
-		printf("FUNK 2\n");
+		//printf("FUNK 2\n");
 	}
-	
 	return;
 }
 
-//-----------//
-// f3 Method //
-//-----------//
-void f3(void) {
-	// Multiples of 3
-	int local = 3;
 
-	printf("THREAD 3: STARTED!!!\n");
+void f3(void) {
+
+	int localVar = 1;
+
+	printf("Thread 3: has begun! - This thread multiplies the local variable by the global each time\n");
 
 	while (1) {
-		printf("THREAD 3:\tGLOBAL: %d\tLOCAL: %d\n", globalRuns, local);
+		printf("Thread 3:\tGlobal: %d\tLocal: %d\n", globalRuns, localVar);
+		localVar = localVar*globalRuns;
 		globalRuns++;
-		local += 3;
 		sleep(1);
-
 		yield();
-		printf("YIELD FUNK 3\n");
+		//printf("YIELD FUNK 3\n");
 	}
-
 	return;
 }
 
-//-------------//
-// main Method //
-//-------------//
+
 int main() {
-	RunQ = (struct queue*) malloc(sizeof(struct queue));
+	RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
 
 
-	RunQ = initQ(RunQ->head);
-printf("Starting Test");
-	start_thread(f1);
-	start_thread(f2);
-	start_thread(f3);
-	run();
+	RunQ = initQ(RunQ->head);//get the party rolling
+	printf("Starting Threads - Increment global by 1 for each context switch");
+	start_thread(f1);//starting
+	start_thread(f2);//some
+	start_thread(f3);//threads
+	run();//RUN EM
 
 	return 0;
 }
