@@ -68,9 +68,9 @@ void f3(void) {
 // main Method //
 //-------------//
 int main() {
-	RunQ = (struct TCB_t*) malloc(sizeof(struct TCB_t));
+	RunQ = (struct queue*) malloc(sizeof(struct queue));
 
-	initQ(RunQ->head);
+	RunQ = initQ(RunQ->head);
 
 	startThread(f1);
 	startThread(f2);
