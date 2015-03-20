@@ -1,4 +1,5 @@
-///que.h
+//Tim Ferguson and Josh Ransom
+//que.h
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -7,9 +8,9 @@
 #include <stdarg.h>
 #include "TCB.h"
 
-extern struct queue *RunQ; 
+extern struct queue *RunQ; //Global Q
 
-struct queue {
+struct queue {  //Queue with TCB inside
     struct TCB_t* head;
     struct TCB_t* elements;
 };
@@ -36,7 +37,7 @@ void debug(const char * format, ...) {
     }
 }
 
-struct TCB_t* newItem()
+struct TCB_t* newItem() //NEw Item implementation
 {
     struct TCB_t* item = (struct TCB_t*) malloc(sizeof(struct TCB_t));
     item->prev = NULL;
@@ -63,12 +64,12 @@ void addQ(struct TCB_t* head, struct TCB_t* item) { //Adds a queue item
 	printf("foo\n");
 	fflush(stdout); 
 	struct TCB_t* temp = head; 
-if(RunQ->head == NULL) {
+if(RunQ->head == NULL) { //no items ->insert first item
 	RunQ->head = item;
 	debug("head\n");
 }   else {
 	printf("else\n"); 
-	if(RunQ->head->next != NULL) {
+	if(RunQ->head->next != NULL) {  //more than 1 item in list, insert tcb into Q
 		printf("ELE 3\n");
 		item->prev = RunQ->head->prev;
 		item->next = RunQ->head; 
@@ -76,7 +77,7 @@ if(RunQ->head == NULL) {
 		RunQ->head->prev = item; 
 }	
 	else {
-		printf("ELE 2 \n");
+		printf("ELE 2 \n"); //Single item in list, add next item to Q
 		RunQ->head->next = item; 
 		RunQ->head->prev = item; 
 		item->next = RunQ->head; 
@@ -87,7 +88,7 @@ if(RunQ->head == NULL) {
    	
 }
 }
-struct TCB_t* delQ(struct TCB_t* head) {
+struct TCB_t* delQ(struct TCB_t* head) { //delQ
     debug("\nDelete Head");
     struct TCB_t* temp = head;
     head = head->next;
@@ -96,7 +97,7 @@ struct TCB_t* delQ(struct TCB_t* head) {
     return temp;
 }
 
-void rotateQ(struct TCB_t* head) {
+void rotateQ(struct TCB_t* head) { 
    RunQ->head = RunQ->head->next;
  //   head->prev = NULL;
 }

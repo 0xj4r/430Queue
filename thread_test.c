@@ -77,9 +77,9 @@ int main() {
 
 	RunQ = initQ(RunQ->head);
 printf("Starting Test");
-	startThread(f1);
-	startThread(f2);
-	startThread(f3);
+	start_thread(f1);
+	start_thread(f2);
+	start_thread(f3);
 	run();
 
 	return 0;
