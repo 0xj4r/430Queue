@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include "TCB.h"
 
-
+extern struct queue *RunQ; 
 
 struct queue {
     struct TCB_t* head;
@@ -47,32 +47,46 @@ struct TCB_t* newItem()
 }
 
 struct queue* initQ(struct TCB_t* head) {//Creates an empty queue pointed to by head var.
-    debug("init");
+    printf("init");
     struct TCB_t* hed = head;
-    debug("malloc queue");
+    printf("malloc queue");
     struct queue* newQueue = (struct queue*) malloc(sizeof(struct queue));
-    debug("after queue");
+    printf("after queue");
     newQueue->elements = hed;
     newQueue->head = hed;
-    debug("return queue");
+    printf("return queue");
     return newQueue;
 }
 
 void addQ(struct TCB_t* head, struct TCB_t* item) { //Adds a queue item
-    struct TCB_t* it = item;
-    struct TCB_t* he = head;
-   	printf("added new item");
-   // printf("\nAdd new Item to queue:\n%d", he->payload);
-    while (he->next != NULL) {
-        he = he->next;
-       // printf("\n%d", he->payload);
-    }
-    he->next = newItem();
-    he->next = it;
-    //printf("\n%d", he->next->payload);
-	printf("Payload");
+	printf("DEBUG:addQ ////\n");	
+	printf("foo\n");
+	fflush(stdout); 
+	struct TCB_t* temp = head; 
+if(RunQ->head == NULL) {
+	RunQ->head = item;
+	debug("head\n");
+}   else {
+	printf("else\n"); 
+	if(RunQ->head->next != NULL) {
+		printf("ELE 3\n");
+		item->prev = RunQ->head->prev;
+		item->next = RunQ->head; 
+		RunQ->head->prev->next = item; 
+		RunQ->head->prev = item; 
+}	
+	else {
+		printf("ELE 2 \n");
+		RunQ->head->next = item; 
+		RunQ->head->prev = item; 
+		item->next = RunQ->head; 
+		item->prev = RunQ->head;
+	}
+//	temp->next = item;
+//	RunQ->head->next->prev = RunQ->head; 
+   	
 }
-
+}
 struct TCB_t* delQ(struct TCB_t* head) {
     debug("\nDelete Head");
     struct TCB_t* temp = head;
@@ -83,8 +97,8 @@ struct TCB_t* delQ(struct TCB_t* head) {
 }
 
 void rotateQ(struct TCB_t* head) {
-    head = head->next;
-    head->prev = NULL;
+   RunQ->head = RunQ->head->next;
+ //   head->prev = NULL;
 }
 
 void printElements (struct queue* que) {

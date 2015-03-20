@@ -21,6 +21,7 @@ void f1(void) {
 		local++;
 		sleep(1);
 		yield();
+		printf("FUNK 1\n");
 	}
 
 	return;
@@ -39,6 +40,7 @@ void f2(void) {
 		local *= 2;
 		sleep(1);
 		yield();
+		printf("FUNK 2\n");
 	}
 	
 	return;
@@ -51,14 +53,16 @@ void f3(void) {
 	// Multiples of 3
 	int local = 3;
 
-//	if (DEBUG) printf("THREAD 3: STARTED!!!\n");
+	printf("THREAD 3: STARTED!!!\n");
 
-	for (;;) {
+	while (1) {
 		printf("THREAD 3:\tGLOBAL: %d\tLOCAL: %d\n", globalRuns, local);
 		globalRuns++;
 		local += 3;
 		sleep(1);
+
 		yield();
+		printf("YIELD FUNK 3\n");
 	}
 
 	return;
@@ -70,8 +74,9 @@ void f3(void) {
 int main() {
 	RunQ = (struct queue*) malloc(sizeof(struct queue));
 
-	RunQ = initQ(RunQ->head);
 
+	RunQ = initQ(RunQ->head);
+printf("Starting Test");
 	startThread(f1);
 	startThread(f2);
 	startThread(f3);
