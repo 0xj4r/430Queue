@@ -21,8 +21,11 @@ void InitSem(Semaphore sem, int value) {
 
 void P(Semaphore sem) {
     sem->value--;
-    if (sem->value >= 0) {
-        
+    if (sem->value < 0) {//Block
+        struct queue* tempQ = RunQ;
+        struct TCB_t* item = delQ(RunQ);
+        addQ(sem->semQ, item);
+        swapcontext(tempQ->head->context, RunQ->head->context);
     }
     return;
 }
