@@ -10,9 +10,9 @@ struct Semaphore* empty;
 struct Semaphore* full;
 struct Semaphore* mutex1;
 struct Semaphore* mutex2;
-int buffer[NUM_ITEMS];
-int in = 0;
-int out = 0;
+static int buffer[NUM_ITEMS];
+static int in = 0;
+static int out = 0;
 
 
 void producer(void) {
