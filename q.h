@@ -64,30 +64,28 @@ void addQ(struct TCB_t* head, struct TCB_t* item) { //Adds a queue item
 	//printf("foo\n");
 	fflush(stdout); 
 	struct TCB_t* temp = head; 
-if(RunQ->head == NULL) { //no items ->insert first item
-	RunQ->head = item;
-	//debug("head\n");
-}   else {
-	//printf("else\n"); 
-	if(RunQ->head->next != NULL) {  //more than 1 item in list, insert tcb into Q
-		//printf("ELE 3\n");
-		item->prev = RunQ->head->prev;
-		item->next = RunQ->head; 
-		RunQ->head->prev->next = item; 
-		RunQ->head->prev = item; 
-}	
-	else {
-		//printf("ELE 2 \n"); //Single item in list, add next item to Q
-		RunQ->head->next = item; 
-		RunQ->head->prev = item; 
-		item->next = RunQ->head; 
-		item->prev = RunQ->head;
-	}
-//	temp->next = item;
-//	RunQ->head->next->prev = RunQ->head; 
-   	
+    if(RunQ->head == NULL) { //no items ->insert first item
+        RunQ->head = item;
+        //debug("head\n");
+    }   else {
+        //printf("else\n"); 
+        if(RunQ->head->next != NULL) {  //more than 1 item in list, insert tcb into Q
+            //printf("ELE 3\n");
+            item->prev = RunQ->head->prev;
+            item->next = RunQ->head; 
+            RunQ->head->prev->next = item; 
+            RunQ->head->prev = item; 
+        }
+        else {
+            //printf("ELE 2 \n"); //Single item in list, add next item to Q
+            RunQ->head->next = item; 
+            RunQ->head->prev = item; 
+            item->next = RunQ->head; 
+            item->prev = RunQ->head;
+        }
+    }
 }
-}
+
 struct TCB_t* delQ(struct TCB_t* head) { //delQ
     //debug("\nDelete Head");
     struct TCB_t* temp = head;

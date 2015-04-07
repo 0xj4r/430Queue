@@ -41,7 +41,6 @@ void yield() { //context switch type of function
 	rotateQ(RunQ->head);
 	to = &(RunQ->head->context);
 	swapcontext(from, to);
-
 	return;
 }
 
