@@ -3,82 +3,63 @@
 #include "threads.h"
 #include "sem.h"
 
+#define NUM_ITEMS = 2
 int globalRuns = 0;
 struct queue *RunQ;//global Q
-struct Semaphore* obama;
+struct Semaphore* empty;
+struct Semaphore* full;
+struct Semaphore* mutex1;
+struct Semaphore* mutex2;
+int buffer[NUM_ITEMS];
+int in = 0;
+int out = 0;
 
 
-void f1(void) {
-    int localVar = 1;
+void producer(void) {
     while (1) {
-//	printf("F1 while\n");
-        P(obama);
-        // Critical Section
-        printf("Thread 1:\tGlobal: %d\tLocal: %d\n", globalRuns, localVar);
-        sleep(1);
-	globalRuns ++;
-        localVar *=2;
-        V(obama);
-	printf("Thread 1: Exited CS\n");
-	sleep(3);
+        P(mutex1);
+        P(empty);
+        buffer[in] = 1;
+        in = (in + 1) % NUM_ITEMS;
+        V(full);
+        V(mutex1);
+        return;
     }
-    return;
 }
 
-void f2(void) {
-    int localVar = 1;
-	printf("Thread 2 Started\n");
-    while (1) {
-        P(obama);
-        // Critical Section
-        printf("Thread 2:\tGlobal: %d\tLocal: %d\n", globalRuns, localVar);
-        sleep(1);
-	globalRuns ++;
-        localVar *=3;
-        V(obama);
-	printf("Thread 2: Exited CS\n");
-	sleep(1);
+void consumer(void) {
+    while(1) {
+        P(mutex2);
+        P(full);
+        int item = buffer[out];
+        out = (out + 1) % NUM_ITEMS;
+        V(empty);
+        V(mutex2);
+        return;
     }
-    return;
 }
-
-
-void f3(void) {
-    int localVar = 1;
-    printf("Thread 3: has begun! - This thread multiplies the local variable by the global each time\n");
-    
-    while (1) {
-        printf("Thread 3:\tGlobal: %d\tLocal: %d\n", globalRuns, localVar);
-        localVar = localVar*globalRuns;
-        globalRuns++;
-        sleep(1);
-        yield();
-        //printf("YIELD FUNK 3\n");
-    }
-    return;
-}
-
 
 int main() {
-	printf("Main has been entered\n");
-    obama = (struct Semaphore*) malloc(sizeof(struct Semaphore));
-  	printf("malloc'd \n");
-	 // obama->semQ = initQ(obama->semQ->head);
-	printf("init que\n");
-    InitSem(obama, 1);
- 	printf("init \n"); 
+    //Allocate memory for Semaphores
+    empty = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+    full = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+    mutex1 = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+    mutex2 = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+    //Initialize Mutexes
+    InitSem(empty, NUM_ITEMS);
+    InitSem(full, 0);
+    InitSem(mutex2, 1);
+    InitSem(mutex1, 1);
+    
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
-    
     RunQ = initQ(RunQ->head);//get the party rolling
-    
     printf("Starting Threads - Increment global by 1 for each context switch");
     
-    start_thread(f1);//starting
-	   
- start_thread(f2);//some
-//    start_thread(f3);//threads
+    start_thread(producer);//starting
+    start_thread(producer);//starting
+    start_thread(consumer);//some
+    start_thread(consumer);//some
     run();//RUN EM
-    
     return 0;
 }
 
