@@ -23,14 +23,16 @@ void P(struct Semaphore* sem) {
     sem->value--;
 	printf("P entered: %d \n", sem->value); 
    if (sem->value < 0) {//Block
-        struct queue* tempQ = RunQ;
-        struct TCB_t* item = delQ(RunQ->head);
-        addQ(sem->semQ->head, item);
-        swapcontext(&tempQ->head->context, &RunQ->head->context);
+		
+       // struct queue* tempQ = RunQ;
+       printf("temp q \n");
+	 struct TCB_t* item = delQ(RunQ->head);
+        printf("del q \n");
+	addQ(sem->semQ->head, item);
+        printf("add q \n");
+	swapcontext(&(item->context), &(RunQ->head->context));
     }
-
-//	printf("P1 exited\n");
-	
+//	printf("P1 exited\n");	
     return;
 }
 
@@ -40,8 +42,9 @@ void V(struct Semaphore* sem) {
     if (sem->value < 1) {
         struct TCB_t* temp = delQ(sem->semQ->head);
         addQ(RunQ->head, temp);
-        yield();
+	printf("YIELD\n");
     }
+yield();
     return;
 }
 
