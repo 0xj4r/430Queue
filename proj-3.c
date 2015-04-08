@@ -56,10 +56,10 @@ void producer1(void) {
         buffah[in] = 1;
         globalRuns++;
         local++;
-        printf("Global Runs : %d\tLocal Runs: %d", globalRuns, local)
+        printf("Global Runs : %d\tLocal Runs: %d\n", globalRuns, local);
         in = (in + 1) % NUM_ITEMS;
         sleep(1);
-        printf("Producer 1 Exited CS");
+        printf("Producer 1 Exited CS\n");
         V(full);
     }
 }
@@ -72,10 +72,10 @@ void consumer1 (void) {
         int item = buffah[out];
         globalRuns++;
         local++;
-        printf("Global Runs : %d\tLocal Runs: %d", globalRuns, local)
+        printf("Global Runs : %d\tLocal Runs: %d\n", globalRuns, local);
         out = (out + 1) % NUM_ITEMS;
         sleep(1);
-        printf("Consumer 2 Exited CS");
+        printf("Consumer 2 Exited CS\n");
         V(empty);
     }
 }
@@ -88,10 +88,10 @@ void producer2(void) {
         buffah[in] = 1;
         globalRuns++;
         local++;
-        printf("Global Runs : %d\tLocal Runs: %d", globalRuns, local)
+        printf("Global Runs : %d\tLocal Runs: %d\n", globalRuns, local);
         in = (in + 1) % NUM_ITEMS;
         sleep(1);
-        printf("Producer 2 Exited CS");
+        printf("Producer 2 Exited CS\n");
         V(full);
     }
 }
@@ -104,10 +104,10 @@ void consumer2 (void) {
         int item = buffah[out];
         globalRuns++;
         local++;
-        printf("Global Runs : %d\tLocal Runs: %d", globalRuns, local)
+        printf("Global Runs : %d\tLocal Runs: %d\n", globalRuns, local);
         out = (out + 1) % NUM_ITEMS;
         sleep(1);
-        printf("Consumer 2 Exited CS");
+        printf("Consumer 2 Exited CS\n");
         V(empty);
     }
 }
@@ -127,17 +127,16 @@ int main() {
     
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
     RunQ = initQ(RunQ->head);//get the party rolling
-    printf("Starting Threads - Increment global by 1 for each context switch\n");
+    printf("Starting Threads\n");
     
 //    start_thread((*producer)(1);//starting
 //    start_thread((*consumer)(1));//some
 //    start_thread((*producer)(2));//starting
 //    start_thread((*consumer)(2));//some
-    start_thread((producer1);//starting
+    start_thread(producer1);//starting
     start_thread(consumer1);//some
     start_thread(producer2);//starting
     start_thread(consumer2);//some
-
     run();//RUN EM
     return 0;
 }

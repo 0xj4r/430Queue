@@ -48,34 +48,26 @@ struct TCB_t* newItem() //NEw Item implementation
 }
 
 struct queue* initQ(struct TCB_t* head) {//Creates an empty queue pointed to by head var.
-    //printf("init");
     struct TCB_t* hed = head;
-    //printf("malloc queue");
     struct queue* newQueue = (struct queue*) malloc(sizeof(struct queue));
-    //printf("after queue");
     newQueue->elements = hed;
     newQueue->head = hed;
-    //printf("return queue");
     return newQueue;
 }
 
 void addQ(struct TCB_t* head, struct TCB_t* item) { //Adds a queue item
-	printf("ADD Q\n");
-	fflush(stdout);
 	struct TCB_t* temp = head; 
     if(RunQ->head == NULL) { //no items ->insert first item
         RunQ->head = item;
         //debug("head\n");
     }   else {
         if(RunQ->head->next != NULL) {  //more than 1 item in list, insert tcb into Q
-            printf("ELE 3\n");
             item->prev = RunQ->head->prev;
             item->next = RunQ->head; 
             RunQ->head->prev->next = item; 
             RunQ->head->prev = item; 
         }
         else {
-            printf("ELE 2 \n"); //Single item in list, add next item to Q
             RunQ->head->next = item; 
             RunQ->head->prev = item; 
             item->next = RunQ->head; 
@@ -85,27 +77,21 @@ void addQ(struct TCB_t* head, struct TCB_t* item) { //Adds a queue item
 }
 
 struct TCB_t* delQ(struct TCB_t* head) { //delQ
-    //debug("\nDelete Head");
     struct TCB_t* temp = head;
     head = head->next;
     head->prev = NULL;
-    //debug("%d", head->payload);
     return temp;
 }
 
 void rotateQ(struct TCB_t* head) { 
    RunQ->head = RunQ->head->next;
- //   head->prev = NULL;
 }
 
 void printElements (struct queue* que) {
-    //printf("\nPrint Elements");
     struct queue* temp = que;
     if (temp->elements != NULL) {
         while (temp->elements->next != NULL) {
             temp->elements = temp->elements->next;
-			//printf("item found");
-            //printf("\n%d", temp->elements->payload);
         }
     }
 }
