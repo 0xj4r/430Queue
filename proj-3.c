@@ -16,28 +16,35 @@ int in = 0;
 int out = 0;
 
 
-void producer(void) {
+void producer(int i) {
+    int local=0;
     while (1) {
-	printf("Producer\n"); 
         P(empty);
-	buffah[in] = 1;
+        printf("Producer %d CS Started\n", i);
+        buffah[in] = 1;
+        globalRuns++;
+        local++;
+        printf("Global Runs : %d\tLocal Runs: %d", globalRuns, local)
         in = (in + 1) % NUM_ITEMS;
-	sleep(1);	
-	printf("MUTeX 1 Called \n");
+        sleep(1);
+        printf("Producer %d Exited CS", i);
         V(full);
-	printf("FULL CALLED \n");	
     }
 }
 
-void consumer(void) {
+void consumer (int i) {
+    int local=0;
     while(1) {
-	printf("Consumer\n");
         P(full);
-	int item = buffah[out];
+        printf("Consumer %d CS Started\n", i);
+        int item = buffah[out];
+        globalRuns++;
+        local++;
+        printf("Global Runs : %d\tLocal Runs: %d", globalRuns, local)
         out = (out + 1) % NUM_ITEMS;
-        printf("Consumer V mutex:\n");
-	sleep(1);
-	V(empty);
+        sleep(1);
+        printf("Consumer %d Exited CS", i);
+        V(empty);
     }
 }
 
@@ -55,12 +62,12 @@ int main() {
     
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
     RunQ = initQ(RunQ->head);//get the party rolling
-    printf("Starting Threads - Increment global by 1 for each context switch");
+    printf("Starting Threads - Increment global by 1 for each context switch\n");
     
-    start_thread(producer);//starting
-    start_thread(consumer);//some
-    start_thread(producer);//starting
-    start_thread(consumer);//some
+    start_thread(producer(1));//starting
+    start_thread(consumer(1));//some
+    start_thread(producer(2));//starting
+    start_thread(consumer(2));//some
     run();//RUN EM
     return 0;
 }
