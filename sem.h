@@ -22,11 +22,10 @@ void InitSem(struct Semaphore* sem, int value) {
 void P(struct Semaphore* sem) {
     sem->value--;
 	printf("P entered: %d \n", sem->value); 
-   if (sem->value < 0) {//Block
-		
+   if (sem->value < 0) {//Block	
        // struct queue* tempQ = RunQ;
        printf("temp q \n");
-	 struct TCB_t* item = delQ(RunQ->head);
+	struct TCB_t* item = delQ(RunQ->head);
         printf("del q \n");
 	addQ(sem->semQ->head, item);
         printf("add q \n");
@@ -44,7 +43,8 @@ void V(struct Semaphore* sem) {
         addQ(RunQ->head, temp);
 	printf("YIELD\n");
     }
-yield();
+	printf("V yield\n");
+	yield();
     return;
 }
 

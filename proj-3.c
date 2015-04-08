@@ -3,39 +3,41 @@
 #include "threads.h"
 #include "sem.h"
 
-#define NUM_ITEMS = 2
+#define NUM_ITEMS 6
+
 int globalRuns = 0;
 struct queue *RunQ;//global Q
 struct Semaphore* empty;
 struct Semaphore* full;
 struct Semaphore* mutex1;
 struct Semaphore* mutex2;
-static int buffer[NUM_ITEMS];
-static int in = 0;
-static int out = 0;
+int buffah[NUM_ITEMS];
+int in = 0;
+int out = 0;
 
 
 void producer(void) {
     while (1) {
-        P(mutex1);
+	printf("Producer\n"); 
         P(empty);
-        buffer[in] = 1;
+	buffah[in] = 1;
         in = (in + 1) % NUM_ITEMS;
+	sleep(1);	
+	printf("MUTeX 1 Called \n");
         V(full);
-        V(mutex1);
-        return;
+	printf("FULL CALLED \n");	
     }
 }
 
 void consumer(void) {
     while(1) {
-        P(mutex2);
+	printf("Consumer\n");
         P(full);
-        int item = buffer[out];
+	int item = buffah[out];
         out = (out + 1) % NUM_ITEMS;
-        V(empty);
-        V(mutex2);
-        return;
+        printf("Consumer V mutex:\n");
+	sleep(1);
+	V(empty);
     }
 }
 
@@ -56,8 +58,8 @@ int main() {
     printf("Starting Threads - Increment global by 1 for each context switch");
     
     start_thread(producer);//starting
-    start_thread(producer);//starting
     start_thread(consumer);//some
+    start_thread(producer);//starting
     start_thread(consumer);//some
     run();//RUN EM
     return 0;
