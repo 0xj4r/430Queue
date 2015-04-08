@@ -64,10 +64,10 @@ int main() {
     RunQ = initQ(RunQ->head);//get the party rolling
     printf("Starting Threads - Increment global by 1 for each context switch\n");
     
-    start_thread(producer(1));//starting
-    start_thread(consumer(1));//some
-    start_thread(producer(2));//starting
-    start_thread(consumer(2));//some
+    start_thread((*producer)(1));//starting
+    start_thread((*consumer)(1));//some
+    start_thread((*producer)(2));//starting
+    start_thread((*consumer)(2));//some
     run();//RUN EM
     return 0;
 }
