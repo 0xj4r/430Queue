@@ -16,63 +16,87 @@ int wc = 0;
 
 
 void reader(void) {
-    
-printf("Reader1\n");
-while (1) {
-        P(mutex);
+    while (1) {
+        readerEnter();
+        readerExit();
+    }
+}
 
-printf("Reader2\n");
+void readerEnter() {
+    printf("Reader1\n");
+        P(mutex);
+        printf("Reader2\n");
         if (wwc > 0 || wc > 0) {
-	printf("in the if\n");    
-        rwc++;
+            printf("in the if\n");
+            rwc++;
             V(mutex);
             P(readerSem);
-            P(mutex);
+//            P(mutex);
             rwc--;
         }
-        rc++;
-        V(mutex);
-	printf("V P mutex\n");
-        P(mutex);
-        printf("READER \n");
-        rc--;
-        if (rc == 0 && wwc > 0) {
-        printf("reader 3\n");   
-	 V(writerSem);
+    rc++;
+    if (rwc > 0 ) {
+        V(readerSem);
+    }
+        else {
+            V(mutex);
         }
+}
 
+void readerExit() }{
+    printf("V P mutex\n");
+    P(mutex);
+    printf("READER \n");
+    rc--;
+    if (rc == 0 && wwc > 0) {
+        printf("reader 3\n");
+        V(writerSem);
+    }
+    else {
+        V(mutex);
     }
 }
+
+
 void writer(void) {
         while (1) {
-	printf("writer start\n");
-        P(mutex);
-	printf("writer P mutex\n");
-        if(rc > 0 || wc > 0 || rwc > 0 || wwc > 0) {
-           printf("BIG IF\n");
-		 wwc ++;
-            V(mutex);
-            P(writerSem);
-            P(mutex);
-            wwc--;
-        }
-        wc ++;
-        V(mutex);
-	sleep(1);
-	printf("VP mutex writer : rc : %d rwc %d\n", rc, rwc);
-        P(mutex);
-        printf("WRITER\n");
-        wc--;
-        if (rwc > 0 ) {
-	int i;
-            for ( i =0; i <= rwc; i++) { V(readerSem); }
-        }
-        else if (wwc > 0) { V(writerSem);}
-        V(mutex);
-    }
+            writerEnter();
+            sleep(1);
+            writerExit();
+	    }
 }
 
 
+void writerEnter() {
+    printf("writer start\n");
+    P(mutex);
+    printf("writer P mutex\n");
+    if(rc > 0 || wc > 0 ) {//|| rwc > 0 || wwc > 0) {
+        printf("BIG IF\n");
+        wwc ++;
+        V(mutex);
+        P(writerSem);
+//        P(mutex);
+        wwc--;
+    }
+    wc ++;
+    V(mutex);
+}
+
+void writerExit() {
+    printf("VP mutex writer : rc : %d rwc %d\n", rc, rwc);
+    P(mutex);
+    printf("WRITER\n");
+    wc--;
+    if (rwc > 0 ) {
+        V(readerSem);
+//        int i;
+//        for ( i =0; i <= rwc; i++) { V(readerSem); }
+    }
+    else if (wwc > 0) { V(writerSem);}
+    V(mutex);
+
+}
 
 
 
