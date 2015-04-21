@@ -14,23 +14,23 @@ struct Semaphore {
     int value;
 };
 
-void InitSem(Semaphore sem, int value) {
+void InitSem(struct Semaphore* sem, int value) {
     sem->value = value;
     return;
 }
 
-void P(Semaphore sem) {
+void P(struct Semaphore* sem) {
     sem->value--;
     if (sem->value < 0) {//Block
         struct queue* tempQ = RunQ;
-        struct TCB_t* item = delQ(RunQ);
-        addQ(sem->semQ, item);
+        struct TCB_t* item = delQ(RunQ->head);
+        addQ(sem->semQ->head, item);
         swapcontext(tempQ->head->context, RunQ->head->context);
     }
     return;
 }
 
-void V(Semaphore sem) {
+void V(struct Semaphore* sem) {
     sem->value++;
     if (sem->value < 1) {
         struct TCB_t* temp = delQ(sem->semQ->head);

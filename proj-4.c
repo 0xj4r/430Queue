@@ -1,6 +1,6 @@
 // Students- Tim Ferguson and Josh Ransom
 
-#include "threads.h"
+#include "sem.h"
 
 
 int globalRuns = 0;
@@ -13,7 +13,7 @@ int rwc = 0;
 int rc =0;
 int wc = 0;
 
-void reader(int num) {
+void reader(void) {
     while (1) {
         P(mutex);
         if (wwc > 0 || wc > 0) {
@@ -36,13 +36,13 @@ void reader(int num) {
     }
 }
 
-void writer(int num) {
+void writer(void) {
         while (1) {
         P(mutex);
         if(rc > 0 || wc > 0 || rwc > 0 || wwc > 0) {
             wwc ++;
             V(mutex);
-            P(wsem);
+            P(writerSem);
             P(mutex);
             wwc--;
         }
@@ -54,7 +54,7 @@ void writer(int num) {
         if (rwc > 0 ) {
             for (int i =0; i <= rwc; i++) { V(readerSem); }
         }
-        else if (wwc > 0) { V(writerSem) }
+        else if (wwc > 0) { V(writerSem);}
         V(mutex);
         return;
     }
@@ -65,7 +65,7 @@ void writer(int num) {
 
 void startSemaphore(struct Semaphore* sem, int initial) {
     sem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
-    sem->semQ = initQ(sem->head);
+    sem->semQ = initQ(sem->semQ->head);
     InitSem(sem, initial);
 }
 
@@ -73,14 +73,14 @@ int main() {
 //    obama = (struct Semaphore*) malloc(sizeof(struct Semaphore));
 //    obama->semQ = initQ(obama->head);
 //    InitSem(obama, 0);
-    startSemaphore(readerSem, 0);
+    startSemaphore(readerSem, 1);
     startSemaphore(mutex, 1);
     startSemaphore(writerSem, 1);
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
     RunQ = initQ(RunQ->head);//get the party rolling
     printf("Starting Readers and Writers");
-    start_thread(reader(1));
-    start_thread(writer(1));
+    start_thread(reader);
+    start_thread(writer);
 //    start_thread(reader(2));
 //    start_thread(writer(2));
 //    start_thread(reader(3));
