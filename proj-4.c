@@ -1,5 +1,6 @@
 // Students- Tim Ferguson and Josh Ransom
 
+
 #include "sem.h"
 
 
@@ -12,6 +13,7 @@ int wwc = 0;
 int rwc = 0;
 int rc =0;
 int wc = 0;
+
 
 void reader(void) {
     while (1) {
@@ -36,6 +38,7 @@ void reader(void) {
     }
 }
 
+
 void writer(void) {
         while (1) {
         P(mutex);
@@ -52,7 +55,8 @@ void writer(void) {
         printf("WRITER");
         wc--;
         if (rwc > 0 ) {
-            for (int i =0; i <= rwc; i++) { V(readerSem); }
+			int i = 0;//c99 fix
+            for ( i = 0; i <= rwc; i++) { V(readerSem); }
         }
         else if (wwc > 0) { V(writerSem);}
         V(mutex);
@@ -63,24 +67,29 @@ void writer(void) {
 
 
 
+
 void startSemaphore(struct Semaphore* sem, int initial) {
     sem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
     sem->semQ = initQ(sem->semQ->head);
     InitSem(sem, initial);
 }
 
+
 int main() {
 //    obama = (struct Semaphore*) malloc(sizeof(struct Semaphore));
 //    obama->semQ = initQ(obama->head);
 //    InitSem(obama, 0);
+
     startSemaphore(readerSem, 1);
     startSemaphore(mutex, 1);
     startSemaphore(writerSem, 1);
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
     RunQ = initQ(RunQ->head);//get the party rolling
     printf("Starting Readers and Writers");
+
     start_thread(reader);
     start_thread(writer);
+
 //    start_thread(reader(2));
 //    start_thread(writer(2));
 //    start_thread(reader(3));
