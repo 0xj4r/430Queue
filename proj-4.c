@@ -1,5 +1,6 @@
 // Students- Tim Ferguson and Josh Ransom
 
+
 #include "sem.h"
 
 
@@ -12,6 +13,7 @@ int wwc = 0;
 int rwc = 0;
 int rc =0;
 int wc = 0;
+
 
 void reader(void) {
     
@@ -73,6 +75,7 @@ void writer(void) {
 
 
 
+
 void startSemaphore(struct Semaphore* sem, int initial) {
 	printf("startSem1\n");
     sem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
@@ -82,6 +85,7 @@ void startSemaphore(struct Semaphore* sem, int initial) {
     InitSem(sem, initial);
 	printf("complete INit sem\n");
 }
+
 
 int main() {
 	printf("MAIN\n");    
@@ -125,13 +129,6 @@ writerSem->semQ = initQ(writerSem->semQ->head);
  start_thread(writer);
 
     start_thread(reader);
-//    start_thread(reader(2));
-//    start_thread(writer(2));
-//    start_thread(reader(3));
-//    start_thread(writer(3));
-   printf("Ready to run \n"); 
-    run();//RUN EM
-    
     return 0;
 }
 
