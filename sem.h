@@ -25,7 +25,7 @@ void P(struct Semaphore* sem) {
         struct queue* tempQ = RunQ;
         struct TCB_t* item = delQ(RunQ->head);
         addQ(sem->semQ->head, item);
-        swapcontext(tempQ->head->context, RunQ->head->context);
+        swapcontext(&tempQ->head->context, &RunQ->head->context);
     }
     return;
 }

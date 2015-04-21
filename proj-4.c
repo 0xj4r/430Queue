@@ -52,7 +52,8 @@ void writer(void) {
         printf("WRITER");
         wc--;
         if (rwc > 0 ) {
-            for (int i =0; i <= rwc; i++) { V(readerSem); }
+	int i;
+            for ( i =0; i <= rwc; i++) { V(readerSem); }
         }
         else if (wwc > 0) { V(writerSem);}
         V(mutex);
