@@ -17,7 +17,7 @@ void reader(int num) {
     while (1) {
         P(mutex);
         if (wwc > 0 || wc > 0) {
-            wwc++;
+            rwc++;
             V(mutex);
             P(readerSem);
             P(mutex);
@@ -28,7 +28,7 @@ void reader(int num) {
         P(mutex);
         printf("READER ");
         rc--;
-        if (rc ==0 && wwc > 0) {
+        if (rc == 0 && wwc > 0) {
             V(writerSem);
         }
         return;
