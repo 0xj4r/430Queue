@@ -21,7 +21,8 @@ while (1) {
 
 printf("Reader2\n");
         if (wwc > 0 || wc > 0) {
-            rwc++;
+	printf("in the if\n");    
+        rwc++;
             V(mutex);
             P(readerSem);
             P(mutex);
@@ -29,21 +30,25 @@ printf("Reader2\n");
         }
         rc++;
         V(mutex);
+	printf("V P mutex\n");
         P(mutex);
-        printf("READER ");
+        printf("READER \n");
         rc--;
         if (rc == 0 && wwc > 0) {
-            V(writerSem);
+        printf("reader 3\n");   
+	 V(writerSem);
         }
-        return;
+
     }
 }
-
 void writer(void) {
         while (1) {
+	printf("writer start\n");
         P(mutex);
+	printf("writer P mutex\n");
         if(rc > 0 || wc > 0 || rwc > 0 || wwc > 0) {
-            wwc ++;
+           printf("BIG IF\n");
+		 wwc ++;
             V(mutex);
             P(writerSem);
             P(mutex);
@@ -51,8 +56,10 @@ void writer(void) {
         }
         wc ++;
         V(mutex);
+	sleep(1);
+	printf("VP mutex writer : rc : %d rwc %d\n", rc, rwc);
         P(mutex);
-        printf("WRITER");
+        printf("WRITER\n");
         wc--;
         if (rwc > 0 ) {
 	int i;
@@ -60,7 +67,6 @@ void writer(void) {
         }
         else if (wwc > 0) { V(writerSem);}
         V(mutex);
-        return;
     }
 }
 
@@ -88,7 +94,24 @@ printf("init\n");
 
    readerSem->semQ = initQ(readerSem->semQ->head);
 	printf("seaderSem");    
- //startSemaphore(readerSem, 1);
+mutex = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+InitSem(mutex, 1); 
+
+mutex->semQ = (struct queue*) malloc(sizeof(struct queue));
+
+ mutex->semQ = initQ(mutex->semQ->head);
+
+writerSem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+
+InitSem(writerSem, 1); 
+
+writerSem->semQ = (struct queue*) malloc(sizeof(struct queue));
+
+writerSem->semQ = initQ(writerSem->semQ->head);
+
+
+
+//startSemaphore(readerSem, 1);
 	printf("first Sem\n");
    // startSemaphore(mutex, 1);
    // startSemaphore(writerSem, 1);
@@ -97,13 +120,16 @@ printf("init\n");
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
    RunQ = initQ(RunQ->head); //get the party rolling
     printf("Starting Readers and Writers\n");
+   
+
+ start_thread(writer);
+
     start_thread(reader);
-    start_thread(writer);
 //    start_thread(reader(2));
 //    start_thread(writer(2));
 //    start_thread(reader(3));
 //    start_thread(writer(3));
-    
+   printf("Ready to run \n"); 
     run();//RUN EM
     
     return 0;
