@@ -13,18 +13,15 @@ int wwc = 0;
 int rwc = 0;
 int rc =0;
 int wc = 0;
+int readerNum = 1; 
+int writerNum = 1; 
 
 
-void reader(void) {
-    while (1) {
-        readerEnter();
-        readerExit();
-    }
-}
-
-void readerEnter() {
+void readerEnter(int id) {
     printf("Reader1\n");
-        P(mutex);
+	    
+    printf("VP mutex reader : wc : %d wwc %d\n", wc, wwc);
+    P(mutex);
         printf("Reader2\n");
         if (wwc > 0 || wc > 0) {
             printf("in the if\n");
@@ -43,13 +40,13 @@ void readerEnter() {
         }
 }
 
-void readerExit() }{
-    printf("V P mutex\n");
+void readerExit(int id) {
+    printf("%d: Reader mutex\n", id);
     P(mutex);
     printf("READER \n");
     rc--;
     if (rc == 0 && wwc > 0) {
-        printf("reader 3\n");
+        printf("%d: reader 3\n", id);
         V(writerSem);
     }
     else {
@@ -57,18 +54,26 @@ void readerExit() }{
     }
 }
 
+void reader(void) 
+{
 
-void writer(void) {
-        while (1) {
-            writerEnter();
-            sleep(1);
-            writerExit();
-	    }
+	int id = 0;
+	P(mutex); 
+	id = readerNum; 
+	readerNum++;
+	V(mutex);
+	printf("Reader STart\n");
+    while (1) {
+        readerEnter(id);
+	sleep(1);
+        readerExit(id);
+    }
 }
 
 
-void writerEnter() {
-    printf("writer start\n");
+
+void writerEnter(int id) {
+    printf("%d:writer start\n", id);
     P(mutex);
     printf("writer P mutex\n");
     if(rc > 0 || wc > 0 ) {//|| rwc > 0 || wwc > 0) {
@@ -83,15 +88,14 @@ void writerEnter() {
     V(mutex);
 }
 
-void writerExit() {
+void writerExit(int id) {
+    
     printf("VP mutex writer : rc : %d rwc %d\n", rc, rwc);
-    P(mutex);
-    printf("WRITER\n");
+P(mutex);
+    printf("%d: WRITER\n", id);
     wc--;
     if (rwc > 0 ) {
         V(readerSem);
-//        int i;
-//        for ( i =0; i <= rwc; i++) { V(readerSem); }
     }
     else if (wwc > 0) { V(writerSem);}
     V(mutex);
@@ -100,6 +104,21 @@ void writerExit() {
 
 
 
+void writer(void) {
+	
+	int id = 0;
+	P(mutex); 
+	id = writerNum; 
+	writerNum++;
+	V(mutex);
+
+printf("in writer \n");
+        while (1) {
+            writerEnter(id);
+            sleep(1);
+            writerExit(id);
+	    }
+}
 void startSemaphore(struct Semaphore* sem, int initial) {
 	printf("startSem1\n");
     sem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
@@ -151,8 +170,13 @@ writerSem->semQ = initQ(writerSem->semQ->head);
    
 
  start_thread(writer);
-
+	start_thread(writer);
     start_thread(reader);
+	start_thread(reader);
+	start_thread(reader);
+run();
+
+	printf("EXITING PROGRAM\n");
     return 0;
 }
 

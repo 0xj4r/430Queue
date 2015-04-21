@@ -36,8 +36,9 @@ void V(struct Semaphore* sem) {
     if (sem->value < 1) {
         struct TCB_t* temp = delQ(sem->semQ->head);
         addQ(RunQ->head, temp);
-        yield();
     }
+
+        yield();
     return;
 }
 
