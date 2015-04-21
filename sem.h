@@ -21,6 +21,7 @@ void InitSem(struct Semaphore* sem, int value) {
 
 void P(struct Semaphore* sem) {
     sem->value--;
+	printf("P\n");
     if (sem->value < 0) {//Block
         struct queue* tempQ = RunQ;
         struct TCB_t* item = delQ(RunQ->head);

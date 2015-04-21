@@ -14,8 +14,12 @@ int rc =0;
 int wc = 0;
 
 void reader(void) {
-    while (1) {
+    
+printf("Reader1\n");
+while (1) {
         P(mutex);
+
+printf("Reader2\n");
         if (wwc > 0 || wc > 0) {
             rwc++;
             V(mutex);
@@ -32,7 +36,6 @@ void reader(void) {
             V(writerSem);
         }
         return;
-
     }
 }
 
@@ -65,21 +68,35 @@ void writer(void) {
 
 
 void startSemaphore(struct Semaphore* sem, int initial) {
+	printf("startSem1\n");
     sem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+	printf("complete malloc1\n");
     sem->semQ = initQ(sem->semQ->head);
+	printf("complete Init\n");
     InitSem(sem, initial);
+	printf("complete INit sem\n");
 }
 
 int main() {
-//    obama = (struct Semaphore*) malloc(sizeof(struct Semaphore));
-//    obama->semQ = initQ(obama->head);
-//    InitSem(obama, 0);
-    startSemaphore(readerSem, 1);
-    startSemaphore(mutex, 1);
-    startSemaphore(writerSem, 1);
+	printf("MAIN\n");    
+readerSem = (struct Semaphore*) malloc(sizeof(struct Semaphore));
+printf("malloc\n");
+ 
+InitSem(readerSem, 1);
+    readerSem->semQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
+printf("init\n");
+
+   readerSem->semQ = initQ(readerSem->semQ->head);
+	printf("seaderSem");    
+ //startSemaphore(readerSem, 1);
+	printf("first Sem\n");
+   // startSemaphore(mutex, 1);
+   // startSemaphore(writerSem, 1);
+	printf("MAIN2\n");
+	printf("malloc32423\n"); 
     RunQ = (struct queue*) malloc(sizeof(struct queue)); //aloc Q
-    RunQ = initQ(RunQ->head);//get the party rolling
-    printf("Starting Readers and Writers");
+   RunQ = initQ(RunQ->head); //get the party rolling
+    printf("Starting Readers and Writers\n");
     start_thread(reader);
     start_thread(writer);
 //    start_thread(reader(2));

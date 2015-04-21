@@ -49,10 +49,12 @@ struct TCB_t* newItem() //NEw Item implementation
 
 struct queue* initQ(struct TCB_t* head) {//Creates an empty queue pointed to by head var.
     //printf("init");
+	printf("initQ\n");
     struct TCB_t* hed = head;
-    //printf("malloc queue");
+    printf("malloc queue");
+	//printf("\n");
     struct queue* newQueue = (struct queue*) malloc(sizeof(struct queue));
-    //printf("after queue");
+    printf("after queue");
     newQueue->elements = hed;
     newQueue->head = hed;
     //printf("return queue");
